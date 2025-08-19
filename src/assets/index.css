@@ -1,0 +1,7 @@
+body {
+  background-color: rgb(227, 227, 227);
+}
+
+.card-content p {
+  overflow: hidden;
+}
