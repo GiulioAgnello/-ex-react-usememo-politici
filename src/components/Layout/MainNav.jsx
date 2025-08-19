@@ -5,7 +5,7 @@ export default function MainNav() {
     <>
       <nav className="navbar navbar-expand-lg bg-body-tertiary">
         <div className="container-fluid">
-          <h3 className=" fw-bold p-2 ">CAKE POSTS</h3>
+          <h3 className=" fw-bold p-2 ">POLITICIAN</h3>
           <button
             className="navbar-toggler"
             type="button"
@@ -26,7 +26,7 @@ export default function MainNav() {
               </li>
               <li className="nav-item">
                 <NavLink className="nav-link" to="/aboutUs">
-                  Chi siamo
+                  About us
                 </NavLink>
               </li>
               <li className="nav-item">

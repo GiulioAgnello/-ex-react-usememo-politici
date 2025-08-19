@@ -1,8 +1,7 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
-import { NavLink } from "react-router";
 
-let baseurlApi = "http://localhost:3000/posts";
+let baseurlApi = "http://localhost:3333/politicians";
 
 export default function Posts() {
   // presa dei dati
@@ -12,7 +11,7 @@ export default function Posts() {
     axios.get(`${baseurlApi}`).then((res) => {
       console.log(res.data);
 
-      setPost(res.data.data);
+      setPost(res.data);
     });
   }
   useEffect(fetchpost, []);
@@ -24,22 +23,20 @@ export default function Posts() {
             <div key={post.id} className="col-4  ">
               <div className="card ">
                 <img
-                  src={`http://localhost:3000${post.image}`}
+                  src={post.image}
                   className="card-img-top "
                   alt={post.title}
                 />
                 <div className="card-body">
-                  <h5 className="card-title">{post.title}</h5>
+                  <h5 className="card-title">{post.name}</h5>
                   <hr />
-                  <small>Tags: {post.tags}</small>
+                  <small>date of birth: {post.dob}</small>
+                  <hr />
+                  <small>years_in_office: {post.years_in_office}</small>
+                  <p>Country: {post.country}</p>
 
                   <hr />
-
-                  {/* <p className="card-text fs-6 overflow-auto">{post.content}</p> */}
                 </div>
-                <NavLink className="btn btn-secondary" to={`/Posts/${post.id}`}>
-                  Apri
-                </NavLink>
               </div>
             </div>
           ))}
