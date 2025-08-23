@@ -1,12 +1,44 @@
 import axios from "axios";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 
 let baseurlApi = "http://localhost:3333/politicians";
+
+const PoliticianCard = ({
+  id,
+  image,
+  title,
+  name,
+  dob,
+  years_in_office,
+  country,
+}) => {
+  console.log("cards");
+
+  return (
+    <div key={id} className="col-4  ">
+      <div className="card ">
+        <img src={image} className="card-img-top " alt={title} />
+        <div className="card-body">
+          <h5 className="card-title">{name}</h5>
+          <hr />
+          <small>date of birth: {dob}</small>
+          <hr />
+          <small>years_in_office: {years_in_office}</small>
+          <p>Country: {country}</p>
+
+          <hr />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const memorizedPost = React.memo(PoliticianCard);
 
 export default function Posts() {
   // presa dei dati
   const [posts, setPost] = useState([]);
-  const [allPosts, setAllPosts] = useState([]); // aggiungi stato per tutti i post
+
   const [text, setText] = useState("");
 
   function fetchpost() {
@@ -14,7 +46,6 @@ export default function Posts() {
       console.log(res.data);
 
       setPost(res.data);
-      setAllPosts(res.data); // salva tutti i post
     });
   }
   useEffect(fetchpost, []);
@@ -22,38 +53,26 @@ export default function Posts() {
   function handlOnChange(e) {
     const value = e.target.value;
     setText(value);
-
-    const filtered = allPosts.filter((post) =>
-      post.name.toLowerCase().includes(value.toLowerCase())
-    );
-    setPost(filtered);
   }
+
+  const filtered = useMemo(() => {
+    return posts.filter((post) => {
+      const isInName = post.name.toLowerCase().includes(text.toLowerCase());
+      return isInName;
+    });
+  }, [posts, text]);
   return (
     <>
       <div className="container-sm  mt-5">
-        <label htmlFor="search">Cerca</label>
-        <input type="text" value={text} onChange={handlOnChange} />
+        <div className=" text-center p-4 ">
+          <label className="p-3" htmlFor="search ">
+            Cerca
+          </label>
+          <input type="text" value={text} onChange={handlOnChange} />
+        </div>
         <div className="row g-2">
-          {posts.map((post) => (
-            <div key={post.id} className="col-4  ">
-              <div className="card ">
-                <img
-                  src={post.image}
-                  className="card-img-top "
-                  alt={post.title}
-                />
-                <div className="card-body">
-                  <h5 className="card-title">{post.name}</h5>
-                  <hr />
-                  <small>date of birth: {post.dob}</small>
-                  <hr />
-                  <small>years_in_office: {post.years_in_office}</small>
-                  <p>Country: {post.country}</p>
-
-                  <hr />
-                </div>
-              </div>
-            </div>
+          {filtered.map((post) => (
+            <PoliticianCard key={post.id} {...post} />
           ))}
         </div>
       </div>
