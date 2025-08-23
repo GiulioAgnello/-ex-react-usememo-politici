@@ -38,7 +38,7 @@ const memorizedPost = React.memo(PoliticianCard);
 export default function Posts() {
   // presa dei dati
   const [posts, setPost] = useState([]);
-
+  const [selectedPosition, setSelectedPosition] = useState(""); // stato per la select
   const [text, setText] = useState("");
 
   function fetchpost() {
@@ -50,6 +50,15 @@ export default function Posts() {
   }
   useEffect(fetchpost, []);
 
+  const position = useMemo(() => {
+    return posts.reduce((acc, p) => {
+      if (!acc.includes(p.position)) {
+        return [...acc, p.position];
+      }
+      return acc;
+    }, []);
+  }, [posts]);
+
   function handlOnChange(e) {
     const value = e.target.value;
     setText(value);
@@ -58,9 +67,11 @@ export default function Posts() {
   const filtered = useMemo(() => {
     return posts.filter((post) => {
       const isInName = post.name.toLowerCase().includes(text.toLowerCase());
-      return isInName;
+      const isPositionValid =
+        selectedPosition === "" || selectedPosition === post.position;
+      return isInName && isPositionValid;
     });
-  }, [posts, text]);
+  }, [posts, text, selectedPosition]);
   return (
     <>
       <div className="container-sm  mt-5">
@@ -69,6 +80,17 @@ export default function Posts() {
             Cerca
           </label>
           <input type="text" value={text} onChange={handlOnChange} />
+          <select
+            value={selectedPosition}
+            onChange={(e) => setSelectedPosition(e.target.value)}
+          >
+            <option value="">Tutte le posizioni</option>
+            {position.map((pos, i) => (
+              <option key={i} value={pos}>
+                {pos}
+              </option>
+            ))}
+          </select>
         </div>
         <div className="row g-2">
           {filtered.map((post) => (
